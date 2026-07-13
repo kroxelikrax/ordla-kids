@@ -4,7 +4,7 @@ export function Tries(props: {
   currentTry: string;
   word: string;
   tries: string[];
-  revealed?: { index: number; letter: string };
+  revealed?: { index: number; letter: string }[];
   peek?: string | null;
 }) {
   const { tries, currentTry, word, revealed, peek } = props;
@@ -34,8 +34,9 @@ export function Tries(props: {
                 );
               }
               const typed = [...tries, currentTry][i]?.[j];
-              const showHint = isActiveRow && !typed && revealed?.index === j;
-              const letter = showHint ? revealed!.letter : typed;
+              const revealedHere = revealed?.find((r) => r.index === j);
+              const showHint = isActiveRow && !typed && !!revealedHere;
+              const letter = showHint ? revealedHere!.letter : typed;
               return (
                 <Square
                   index={j}

@@ -8,15 +8,26 @@ export function SummaryModal({
   onClose,
   tries,
   word,
-  hintsUsed,
+  removeUsed,
+  removeMax,
+  misplacedUsed,
+  misplacedMax,
+  revealUsed,
+  revealMax,
 }: {
   onClose(): void;
   className: string;
   tries: string[];
   word: string;
-  hintsUsed: number;
+  removeUsed: number;
+  removeMax: number;
+  misplacedUsed: number;
+  misplacedMax: number;
+  revealUsed: number;
+  revealMax: number;
 }) {
   const [results] = usePersistedState<Record<string, number>>("results", {});
+  const totalHints = removeUsed + misplacedUsed + revealUsed;
 
   const guessDistribution = Object.values(results).reduce(
     (memo, v) => {
@@ -44,11 +55,18 @@ export function SummaryModal({
             <b>{word}</b>
           </a>
         </p>
-        {hintsUsed > 0 ? (
-          <p style={{ fontSize: "0.875rem" }}>
-            Ledtrådar: 💡 × {hintsUsed}
-          </p>
-        ) : null}
+        <div style={{ fontSize: "0.8rem", textAlign: "center", lineHeight: 1.4 }}>
+          <div style={{ fontWeight: 600 }}>💡 Ledtrådar</div>
+          <div>
+            Ta bort bokstäver: {removeUsed}/{removeMax}
+          </div>
+          <div>
+            Gul bokstav: {misplacedUsed}/{misplacedMax}
+          </div>
+          <div>
+            Rätt bokstav: {revealUsed}/{revealMax}
+          </div>
+        </div>
         <div className="row gap-m center">
           <Stat number={Object.keys(results).length} label="Spelade" />
           <Stat
@@ -71,7 +89,7 @@ export function SummaryModal({
         </div>
         <div className="row gap-l" style={{ marginTop: "36px", gap: "56px" }}>
           <Next />
-          <Share word={word} tries={tries} hintsUsed={hintsUsed} />
+          <Share word={word} tries={tries} hintsUsed={totalHints} />
         </div>
       </div>
       <div className={"modal-bg " + className} />

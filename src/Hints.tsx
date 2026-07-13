@@ -1,4 +1,10 @@
 export function Hints(props: {
+  removeUsed: number;
+  removeMax: number;
+  misplacedUsed: number;
+  misplacedMax: number;
+  revealUsed: number;
+  revealMax: number;
   canRemoveLetters: boolean;
   canShowMisplaced: boolean;
   canRevealCorrect: boolean;
@@ -13,16 +19,22 @@ export function Hints(props: {
     >
       <HintButton
         label="Ta bort 3 bokstäver"
+        used={props.removeUsed}
+        max={props.removeMax}
         enabled={props.canRemoveLetters}
         onPress={props.onRemoveLetters}
       />
       <HintButton
-        label="Visa en bokstav (gul)"
+        label="Visa gul bokstav"
+        used={props.misplacedUsed}
+        max={props.misplacedMax}
         enabled={props.canShowMisplaced}
         onPress={props.onShowMisplaced}
       />
       <HintButton
-        label="Visa en rätt bokstav"
+        label="Visa rätt bokstav"
+        used={props.revealUsed}
+        max={props.revealMax}
         enabled={props.canRevealCorrect}
         onPress={props.onRevealCorrect}
       />
@@ -32,6 +44,8 @@ export function Hints(props: {
 
 function HintButton(props: {
   label: string;
+  used: number;
+  max: number;
   enabled: boolean;
   onPress: () => void;
 }) {
@@ -45,13 +59,17 @@ function HintButton(props: {
         minHeight: "38px",
         padding: "6px 8px",
         fontSize: "0.7rem",
-        lineHeight: "1.1",
+        lineHeight: "1.15",
         flex: "1 1 0",
         opacity: props.enabled ? 1 : 0.4,
         cursor: props.enabled ? "pointer" : "default",
       }}
     >
       💡 {props.label}
+      <br />
+      <span style={{ fontWeight: 700 }}>
+        {props.used}/{props.max}
+      </span>
     </button>
   );
 }

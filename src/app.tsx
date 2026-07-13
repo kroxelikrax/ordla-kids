@@ -64,7 +64,6 @@ export function App() {
         "results",
         JSON.stringify({ ...results, [word]: hasLost ? -1 : tries.length })
       );
-      localStorage.setItem("hintsUsed_" + word, String(hintState.usedCount));
     }
   }, [hasWon, hasLost]);
   useLayoutEffect(() => {
@@ -122,7 +121,12 @@ export function App() {
             tries={tries}
             word={word}
             className={c}
-            hintsUsed={hintState.usedCount}
+            removeUsed={hintState.removeUsed}
+            removeMax={hintState.removeMax}
+            misplacedUsed={hintState.misplacedUsed}
+            misplacedMax={hintState.misplacedMax}
+            revealUsed={hintState.revealUsed}
+            revealMax={hintState.revealMax}
             onClose={() => setShowModal(false)}
           />
         )}
@@ -132,7 +136,7 @@ export function App() {
         word={word}
         tries={tries}
         currentTry={currentTry}
-        revealed={hasWon || hasLost ? undefined : hintState.hints.revealed}
+        revealed={hasWon || hasLost ? [] : hintState.hints.revealed}
         peek={peek}
       />
       {hasWon || hasLost ? (
@@ -140,6 +144,12 @@ export function App() {
       ) : (
         <>
           <Hints
+            removeUsed={hintState.removeUsed}
+            removeMax={hintState.removeMax}
+            misplacedUsed={hintState.misplacedUsed}
+            misplacedMax={hintState.misplacedMax}
+            revealUsed={hintState.revealUsed}
+            revealMax={hintState.revealMax}
             canRemoveLetters={hintState.canRemoveLetters}
             canShowMisplaced={hintState.canShowMisplaced}
             canRevealCorrect={hintState.canRevealCorrect}
