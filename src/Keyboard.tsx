@@ -1,11 +1,13 @@
 import { useEffect, useState } from "preact/hooks";
+import { Hints } from "./useHints";
 
 export function Keyboard(props: {
   onPress: (key: string) => void;
   word: string;
   tries: string[];
+  hints: Hints;
 }) {
-  const { word, tries, onPress } = props;
+  const { word, tries, onPress, hints } = props;
 
   useEffect(() => {
     const listener = (e: KeyboardEvent) => {
@@ -37,7 +39,7 @@ export function Keyboard(props: {
           style={{ maxWidth: "calc(100vw - 12px)" }}
         >
           {keys[i].map((k) => (
-            <Key word={word} tries={tries} key_={k} onPress={onPress} />
+            <Key word={word} tries={tries} key_={k} onPress={onPress} hints={hints} />
           ))}
         </div>
       ))}
@@ -50,8 +52,9 @@ export function Key(props: {
   onPress: (key: string) => void;
   tries: string[];
   word: string;
+  hints: Hints;
 }) {
-  const { key_, onPress, tries, word } = props;
+  const { key_, onPress, tries, word, hints } = props;
   const [pressed, setPressed] = useState(false);
 
   const hit = tries.some((try_) =>
@@ -59,9 +62,14 @@ export function Key(props: {
   );
 
   const almost =
-    !hit && word.indexOf(key_) > -1 && tries.some((t) => t.indexOf(key_) > -1);
+    !hit &&
+    ((word.indexOf(key_) > -1 && tries.some((t) => t.indexOf(key_) > -1)) ||
+      hints.misplaced === key_);
   const miss =
-    word.indexOf(key_) === -1 && tries.some((t) => t.indexOf(key_) > -1);
+    !hit &&
+    !almost &&
+    ((word.indexOf(key_) === -1 && tries.some((t) => t.indexOf(key_) > -1)) ||
+      (hints.removed?.includes(key_) ?? false));
   const key =
     key_ === "Backspace" ? (
       <span

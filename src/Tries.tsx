@@ -4,8 +4,9 @@ export function Tries(props: {
   currentTry: string;
   word: string;
   tries: string[];
+  revealed?: { index: number; letter: string };
 }) {
-  const { tries, currentTry, word } = props;
+  const { tries, currentTry, word, revealed } = props;
 
   return (
     <div
@@ -15,7 +16,11 @@ export function Tries(props: {
       {[0, 1, 2, 3, 4, 5].map((i) => (
         <div className="row center gap-s">
           {[0, 1, 2, 3, 4].map((j) => {
-            const letter = [...tries, currentTry][i]?.[j];
+            const typed = [...tries, currentTry][i]?.[j];
+            const isActiveRow = i === tries.length;
+            const showHint =
+              isActiveRow && !typed && revealed?.index === j;
+            const letter = showHint ? revealed!.letter : typed;
             return (
               <Square
                 index={j}
@@ -23,6 +28,7 @@ export function Tries(props: {
                 isCurrentTry={i >= tries.length}
                 word={word}
                 letter={letter}
+                isHint={showHint}
                 key={"" + letter + i + j}
               />
             );

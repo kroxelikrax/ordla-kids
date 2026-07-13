@@ -8,11 +8,13 @@ export function SummaryModal({
   onClose,
   tries,
   word,
+  hintsUsed,
 }: {
   onClose(): void;
   className: string;
   tries: string[];
   word: string;
+  hintsUsed: number;
 }) {
   const [results] = usePersistedState<Record<string, number>>("results", {});
 
@@ -42,6 +44,11 @@ export function SummaryModal({
             <b>{word}</b>
           </a>
         </p>
+        {hintsUsed > 0 ? (
+          <p style={{ fontSize: "0.875rem" }}>
+            Ledtrådar: 💡 × {hintsUsed}
+          </p>
+        ) : null}
         <div className="row gap-m center">
           <Stat number={Object.keys(results).length} label="Spelade" />
           <Stat
@@ -64,7 +71,7 @@ export function SummaryModal({
         </div>
         <div className="row gap-l" style={{ marginTop: "36px", gap: "56px" }}>
           <Next />
-          <Share word={word} tries={tries} />
+          <Share word={word} tries={tries} hintsUsed={hintsUsed} />
         </div>
       </div>
       <div className={"modal-bg " + className} />
@@ -136,7 +143,15 @@ function Next() {
     </div>
   );
 }
-function Share({ tries, word }: { word: string; tries: string[] }) {
+function Share({
+  tries,
+  word,
+  hintsUsed,
+}: {
+  word: string;
+  tries: string[];
+  hintsUsed: number;
+}) {
   let resultsString = tries
     .map((t) =>
       t
@@ -157,11 +172,12 @@ function Share({ tries, word }: { word: string; tries: string[] }) {
     )
     .join("\n");
 
+  const hintLine = hintsUsed > 0 ? `\n💡 ${hintsUsed} ledtrådar` : "";
   const data = {
     url: window.location.href,
     text: `Ordla, ${new Date().getDate()} ${monthStr(new Date().getMonth())}:
 
-${resultsString}
+${resultsString}${hintLine}
 `,
     title: "Ordla",
   };

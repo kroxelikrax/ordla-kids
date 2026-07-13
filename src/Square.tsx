@@ -4,8 +4,9 @@ export function Square(props: {
   guess?: string;
   isCurrentTry: boolean;
   word: string;
+  isHint?: boolean;
 }) {
-  const { index, letter, word, isCurrentTry, guess } = props;
+  const { index, letter, word, isCurrentTry, guess, isHint } = props;
   const hit = !isCurrentTry && word[index] === letter;
   const letterOccurrances = word.split("").filter((l) => l === letter).length;
   const letterHitsElsewhere =
@@ -64,11 +65,14 @@ export function Square(props: {
         borderRadius: "6px",
         padding: "6px",
         flexShrink: 1,
-        background: hit
+        background: isHint
+          ? "var(--letter-bg--hit)"
+          : hit
           ? "var(--letter-bg--hit)"
           : almost && !isExtranousAlmost
           ? "var(--letter-bg--almost)"
           : "var(--letter-bg)",
+        opacity: isHint ? 0.55 : 1,
       }}
     >
       {letter}

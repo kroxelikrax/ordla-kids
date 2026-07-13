@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "build-ci": "tsc && vite build --base=/ordla/",
+    "build-ci": "tsc && vite build --base=/ordla-kids/",
     "preview": "vite preview"
   },
   "dependencies": {
