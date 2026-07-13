@@ -7,10 +7,12 @@ import {
 } from "preact/hooks";
 import { Fade } from "./Fade";
 import { Help } from "./Help";
+import { Hints } from "./Hints";
 import { Keyboard } from "./Keyboard";
 import { ResultsLink } from "./ResultsLink";
 import { SummaryModal } from "./SummaryModal";
 import { Tries } from "./Tries";
+import { useHints } from "./useHints";
 import { usePersistedState } from "./usePersistedState";
 import { useTimer } from "./useTimer";
 import { useViewportHeight } from "./useViewportHeight";
@@ -27,6 +29,7 @@ export function App() {
   const [showModal, setShowModal] = useState(false);
   const hasWon = useMemo(() => tries[tries.length - 1] === word, [tries]);
   const hasLost = useMemo(() => !hasWon && tries.length === 6, [tries, hasWon]);
+  const hintState = useHints(word, tries);
   const height = useViewportHeight();
   useEffect(() => {
     if (warning) {
@@ -43,6 +46,7 @@ export function App() {
         "results",
         JSON.stringify({ ...results, [word]: hasLost ? -1 : tries.length })
       );
+      localStorage.setItem("hintsUsed_" + word, String(hintState.usedCount));
     }
   }, [hasWon, hasLost]);
   useLayoutEffect(() => {
@@ -86,16 +90,37 @@ export function App() {
             tries={tries}
             word={word}
             className={c}
+            hintsUsed={hintState.usedCount}
             onClose={() => setShowModal(false)}
           />
         )}
       </Fade>
       <h2>Ordla</h2>
-      <Tries word={word} tries={tries} currentTry={currentTry} />
+      <Tries
+        word={word}
+        tries={tries}
+        currentTry={currentTry}
+        revealed={hintState.hints.revealed}
+      />
       {hasWon || hasLost ? (
         <ResultsLink onPress={() => setShowModal(true)} />
       ) : (
-        <Keyboard word={word} tries={tries} onPress={handlePress} />
+        <>
+          <Hints
+            canRemoveLetters={hintState.canRemoveLetters}
+            canShowMisplaced={hintState.canShowMisplaced}
+            canRevealCorrect={hintState.canRevealCorrect}
+            onRemoveLetters={hintState.useRemoveLetters}
+            onShowMisplaced={hintState.useShowMisplaced}
+            onRevealCorrect={hintState.useRevealCorrect}
+          />
+          <Keyboard
+            word={word}
+            tries={tries}
+            onPress={handlePress}
+            hints={hintState.hints}
+          />
+        </>
       )}
     </div>
   );
