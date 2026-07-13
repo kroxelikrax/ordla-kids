@@ -100,7 +100,7 @@ export function App() {
         word={word}
         tries={tries}
         currentTry={currentTry}
-        revealed={hintState.hints.revealed}
+        revealed={hasWon || hasLost ? undefined : hintState.hints.revealed}
       />
       {hasWon || hasLost ? (
         <ResultsLink onPress={() => setShowModal(true)} />

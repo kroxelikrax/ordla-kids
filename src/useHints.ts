@@ -29,10 +29,15 @@ export function useHints(word: string, tries: string[]) {
   const absentLetters = ALPHABET.filter((l) => !lettersInWord.has(l));
   const canRemoveLetters = !hints.removed && absentLetters.length > 0;
 
-  // Hint 2: a letter that is in the word at a position not yet guessed correctly.
+  // Hint 2: a letter that is in the word at a position not yet guessed
+  // correctly, and that isn't already shown green elsewhere. Excluding
+  // already-correct letters avoids "wasting" the hint on a letter whose key is
+  // already a hit (green wins over the hint's yellow, so nothing would change).
+  const correctLetters = new Set<string>();
+  correctPositions.forEach((i) => correctLetters.add(word[i]));
   const misplaceableLetters = word
     .split("")
-    .filter((_, i) => !correctPositions.has(i));
+    .filter((l, i) => !correctPositions.has(i) && !correctLetters.has(l));
   const canShowMisplaced = !hints.misplaced && misplaceableLetters.length > 0;
 
   // Hint 3: a position not yet guessed correctly.
