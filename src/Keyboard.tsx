@@ -64,12 +64,12 @@ export function Key(props: {
   const almost =
     !hit &&
     ((word.indexOf(key_) > -1 && tries.some((t) => t.indexOf(key_) > -1)) ||
-      hints.misplaced === key_);
+      hints.misplaced.includes(key_));
   const miss =
     !hit &&
     !almost &&
     ((word.indexOf(key_) === -1 && tries.some((t) => t.indexOf(key_) > -1)) ||
-      (hints.removed?.includes(key_) ?? false));
+      hints.removed.includes(key_));
   const key =
     key_ === "Backspace" ? (
       <span
