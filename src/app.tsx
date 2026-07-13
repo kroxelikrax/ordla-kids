@@ -115,6 +115,7 @@ export function App() {
     <div className="center" style={{ height: `${height}px` }}>
       <Help />
       <Fade show={warning}>{(c) => <Warning className={c} />}</Fade>
+      <Fade show={!!peek}>{(c) => <PeekNote className={c} />}</Fade>
       <Fade show={showModal}>
         {(c) => (
           <SummaryModal
@@ -162,6 +163,22 @@ function Warning({ className }: { className: string }) {
   return (
     <div className={"warning " + className}>
       Ordet finns inte med i ordlistan.
+    </div>
+  );
+}
+
+function PeekNote({ className }: { className: string }) {
+  return (
+    <div
+      className={"warning " + className}
+      style={{
+        width: "auto",
+        maxWidth: "min(300px, calc(100vw - 24px))",
+        fontSize: "1rem",
+      }}
+    >
+      Rätt ord! 🙂 Men inte ett av barnorden i den här Ordlan, så det räknas
+      inte.
     </div>
   );
 }
